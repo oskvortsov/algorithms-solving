@@ -1,0 +1,62 @@
+{
+  "name": "binary-search.com",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest --no-cache",
+    "ci": "npm run lint && npm run test -- --coverage --no-cache"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:fix"
+    }
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "mapCoverage": true
+  },
+  "author": "Oleg Skvortsov",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "26.0.15",
+    "@types/node": "14.14.6",
+    "@typescript-eslint/eslint-plugin": "4.6.1",
+    "@typescript-eslint/parser": "4.6.1",
+    "eslint": "7.12.1",
+    "eslint-config-prettier": "6.15.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "husky": "4.3.0",
+    "jest": "26.6.3",
+    "lint-staged": "10.5.1",
+    "nodemon": "2.0.6",
+    "prettier": "2.1.2",
+    "ts-jest": "^26.4.3",
+    "ts-node": "9.0.0",
+    "typescript": "4.0.5"
+  }
+}
