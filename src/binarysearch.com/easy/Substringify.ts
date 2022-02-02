@@ -1,19 +1,20 @@
 // https://binarysearch.com/problems/Substringify
 class Substringify {
     static solve(s: string, t: string) {
-        let temp = [t];
-        let count = 0;
+       if (!s || !t) return 0;
 
-        while (count !== t.length) {
-            if (temp.find(regExp => s.match(`/${regExp}/`))) {
-                break;
-            }
+       let temp = 0;
+       let size = [];
 
-            count++;
-            temp = separator(temp);
-        }
+       for (let i = 0; i < s.length - (t.length - 1); i++) {
+           for (let j = 0; j < t.length; j++) {
+               if (s[i + j] == t[j]) temp++;
+           }
+           size.push(temp);
+           temp = 0;
+       }
 
-        return count;
+       return t.length - Math.max(...size, 0);
     }
 }
 
@@ -24,6 +25,7 @@ function separator(words: string[]) {
     ]);
 }
 
-console.log(Substringify.solve('foobar', 'oops'))
-console.log(Substringify.solve('qa', 'zq'))
-console.log(Substringify.solve('qq', 'zq'))
+console.log(Substringify.solve('zk', 'kq') == 2)
+console.log(Substringify.solve('qa', 'zq') == 2)
+console.log(Substringify.solve('qq', 'zq') == 1)
+console.log(Substringify.solve('foobar', 'oops') == 2)
