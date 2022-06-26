@@ -1,5 +1,6 @@
 // https://binarysearch.com/problems/Counting-Maximal-Value-Roots-in-Binary-Tree
 
+//@ts-ignore
 class Tree {
     val: any;
     left: Tree | null;

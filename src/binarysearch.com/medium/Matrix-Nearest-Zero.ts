@@ -1,76 +1,122 @@
 // https://binarysearch.com/problems/Matrix-Nearest-Zero
+
 class MatrixNearestZero {
-    static solve(matrix) {
-        const n = matrix.length;
-        const m = matrix[0].length;
+  static solve(matrix) {
+    const n = matrix.length;
+    const m = matrix[0].length;
+    const visited = initMatrix(n, m, false);
+    const distances = initMatrix(n, m, 0, matrix);
+    const queue = [];
 
-        for (let r = 0; r < matrix.length; r++) {
-            for (let c = 0; c < matrix[r].length; c++) {
-                if (matrix[r][c]) {
-                    const zero = bfs(matrix, r, c, m, n);
-
-                    if (zero) {
-                        distance(zero[0], zero[1], r, c, matrix);
-                    }
-                }
-            }
-        }
-
-        return matrix;
+    for (let r = 0; r < matrix.length; r++) {
+      for (let c = 0; c < matrix[r].length; c++) {
+        if (matrix[r][c] == 0) queue.push([r, c, 0]);
+      }
     }
+
+    while (queue.length) {
+      const [r, c, distance] = queue.shift();
+
+      for (let [qr, qc] of DIRECTIONS) {
+        let row = r + qr;
+        let col = c + qc;
+
+        if (isOutOfMatrix(row, col, m, n)) continue;
+
+          if (matrix[row][col]) {
+              distances[row][col] = distance + 1;
+          }
+
+        if (visited[row][col]) continue;
+
+        visited[row][col] = true;
+        queue.push([row, col, distances[row][col]]);
+      }
+    }
+
+    return distances;
+  }
+}
+
+function initMatrix(m, n, initVal, matrix?) {
+  return new Array(m)
+    .fill(null)
+    .map((valR, r) =>
+      new Array(n)
+        .fill(initVal)
+        .map((valC, c) => (matrix ? matrix[r][c] : initVal)),
+    );
+}
+
+class MatrixNearestZero1 {
+  static solve(matrix) {
+    const n = matrix.length;
+    const m = matrix[0].length;
+
+    for (let r = 0; r < matrix.length; r++) {
+      for (let c = 0; c < matrix[r].length; c++) {
+        if (matrix[r][c]) {
+          const zero = bfs(matrix, r, c, m, n);
+
+          if (zero) {
+            distance(zero[0], zero[1], r, c, matrix);
+          }
+        }
+      }
+    }
+
+    return matrix;
+  }
 }
 
 const DIRECTIONS = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0]
-]
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+];
 
 function bfs(matrix, r, c, m, n) {
-    const queue = [[r, c]];
-    const visited = initVisitedMatrix(n, m);
+  const queue = [[r, c]];
+  const visited = initVisitedMatrix(n, m);
 
+  while (queue.length) {
+    const [qr, qc] = queue.pop();
+    visited[qr][qc] = true;
 
-    while(queue.length) {
-        const [qr, qc] = queue.pop();
-        visited[qr][qc] = true;
+    for (const [dr, dc] of DIRECTIONS) {
+      const row = qr + dr;
+      const col = qc + dc;
 
-        for (const [dr, dc] of DIRECTIONS) {
-            const row = qr + dr;
-            const col = qc + dc;
-
-            if (!isOutOfMatrix(row, col, m, n)) {
-                if (matrix[row][col] == 0) {
-                    return [row, col];
-                }
-
-                if (!visited[row][col]) {
-                    queue.push([row, col]);
-                }
-            }
+      if (!isOutOfMatrix(row, col, m, n)) {
+        if (matrix[row][col] == 0) {
+          return [row, col];
         }
-    }
 
-    return null;
+        if (!visited[row][col]) {
+          queue.push([row, col]);
+        }
+      }
+    }
+  }
+
+  return null;
 }
 
 function distance(dr, dc, r, c, matrix) {
-    matrix[r][c] =  Math.abs(dr - r) + Math.abs(dc - c);
+  matrix[r][c] = Math.abs(dr - r) + Math.abs(dc - c);
 }
 
 function initVisitedMatrix(n, m) {
-    let visited = new Array(n).fill(null);
-    for (const i in visited) visited[i] = new Array(m).fill(false);
+  let visited = new Array(n).fill(null);
+  for (const i in visited) visited[i] = new Array(m).fill(false);
 
-    return visited;
+  return visited;
 }
 
 function isOutOfMatrix(r, c, m, n) {
-    return r < 0 || r >= n || c < 0 || c >= m;
+  return r < 0 || r >= n || c < 0 || c >= m;
 }
-
-
 
 // class MatrixNearestZeroBrut {
 //     static sovle(matrix) {
@@ -104,10 +150,10 @@ function isOutOfMatrix(r, c, m, n) {
 //     }
 // }
 
-console.log(MatrixNearestZero.solve([[1,1,1],[1,1,0]]));
-console.log(MatrixNearestZero.solve([[1,1],[0,1]]));
-console.log(MatrixNearestZero.solve([[1,1,1],[1,1,1],[1,0,1]]));
+// console.log(MatrixNearestZero.solve([[1,1,1],[1,1,0]]));
+// console.log(MatrixNearestZero.solve([[1,1],[0,1]]));
+// console.log(MatrixNearestZero.solve([[1,1,1],[1,1,1],[1,0,1]]));
 // console.log(MatrixNearestZero.solve([[0],[1],[1]]));
-// console.log(MatrixNearestZero.solve([[1,1,1],[1,0,1],[0,0,0]]));
-console.log(MatrixNearestZero.solve([[0,1,1]]));
+console.log(MatrixNearestZero.solve([[1,1,1],[1,0,1],[0,0,0]]));
+console.log(MatrixNearestZero.solve([[0, 1, 1]]));
 // console.log(MatrixNearestZero.solve([[0]]));
