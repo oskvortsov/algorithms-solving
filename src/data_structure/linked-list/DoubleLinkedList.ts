@@ -1,17 +1,20 @@
-class NodeLL<T> {
+// @ts-ignore
+class NodeDLL<T> {
     data: T;
-    next: NodeLL<T> | null;
+    next: NodeDLL<T> | null;
+    prev: NodeDLL<T> | null;
 
-    constructor(data: T, next: NodeLL<T> = null) {
+    constructor(data: T, next: NodeDLL<T> = null, prev: NodeDLL<T> = null) {
         this.data = data;
         this.next = next;
+        this.prev = prev;
     }
 }
 
-export class LinkedList<T> {
-    private head: NodeLL<T> = null;
-    private tail: NodeLL<T> = null;
-    private _size = 0;
+export class DoubleLinkedList<T> {
+    private head: NodeDLL<T> | null = null;
+    private tail: NodeDLL<T> | null = null;
+    private _size: number = 0;
 
     // Empty this linked list, O(n)
     clear() {
@@ -21,6 +24,7 @@ export class LinkedList<T> {
             const next = trav.next;
             trav.data = null;
             trav.next = null;
+            trav.prev = null;
             trav = next;
         }
 
@@ -44,9 +48,9 @@ export class LinkedList<T> {
     // Add a node to the tail of the linked list, O(1)
     addLast(elem: T) {
         if (this.isEmpty()) {
-            this.tail = this.head = new NodeLL(elem);
+            this.tail = this.head = new NodeDLL(elem);
         } else {
-            this.tail.next = new NodeLL(elem);
+            this.tail.next = new NodeDLL(elem, null, this.tail);
             this.tail = this.tail.next;
         }
         this._size++;
@@ -55,9 +59,12 @@ export class LinkedList<T> {
     // Add an element to the beginning of this linked list, O(1)
     addFirst(elem: T) {
         if (this.isEmpty()) {
-            this.tail = this.head = new NodeLL(elem);
+            this.tail = this.head = new NodeDLL(elem);
         } else {
-            this.head = new NodeLL(elem, this.head);
+            const node = new NodeDLL(elem, this.head);
+
+            this.head.prev = node;
+            this.head = node;
         }
         this._size++;
     }
@@ -83,7 +90,10 @@ export class LinkedList<T> {
             temp = temp.next;
         }
 
-        temp.next = new NodeLL(elem, temp.next);
+        const node = new NodeDLL(elem, temp.next, temp);
+        temp.next = node;
+        temp.next.prev = node;
+
         this._size++;
     }
 
@@ -107,9 +117,14 @@ export class LinkedList<T> {
 
         const data = this.head.data;
         this.head = this.head.next;
+
         this._size--;
 
-        if (this.isEmpty()) this.tail = null;
+        if (this.isEmpty()) {
+            this.head = this.tail = null;
+        } else {
+            this.head.prev = null;
+        }
 
         return data;
     }
@@ -119,39 +134,31 @@ export class LinkedList<T> {
         if (this.isEmpty()) throw Error('Empty list');
 
         const data = this.tail.data;
-        let temp = this.head;
-
-        for (let i = 0; i < this._size - 2; i++) {
-            temp = temp.next;
-        }
         this._size--;
+        this.tail = this.tail.prev;
 
         if (this.isEmpty()) {
-            this.head = this.tail = null;
+            this.head = null;
         } else {
-            this.tail = temp;
-            temp.next = null;
+            this.tail.next = null;
         }
 
         return data;
     }
 
     // Remove an arbitrary node from the linked list, O(1)
-    private remove(node: NodeLL<T>): T {
+    private remove(node: NodeDLL<T>): T {
         if (node.next == null) return this.removeLast();
-        if (this._size === 1 || node == this.head) return this.removeFirst();
+        if (node.prev == null) return this.removeFirst();
 
         const data = node.data;
 
-        let trave1 = this.head;
-        let trave2 = this.head.next;
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
 
-        while(trave2 !== node) {
-            trave1 = trave1.next;
-            trave2 = trave2.next;
-        }
+        node.data = null;
+        node = node.next = node.prev = null;
 
-        trave1.next = node.next;
         this._size--;
 
         return data;
@@ -176,10 +183,20 @@ export class LinkedList<T> {
         if (index == 0) return this.removeFirst();
         if (index === this._size - 1) return this.removeLast();
 
-        let trav = this.head;
+        let trav: NodeDLL<T> = null;
 
-        while(index-- > 0) {
-            trav = trav.next;
+        if (index < this._size / 2) {
+            trav = this.head;
+
+            for (let i = 0; i !== index; i++) {
+                trav = trav.next;
+            }
+        } else {
+            trav = this.tail;
+
+            for (let i = this._size; i !== index; i--) {
+                trav = trav.prev;
+            }
         }
 
         return this.remove(trav);
