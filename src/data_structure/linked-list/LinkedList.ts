@@ -1,3 +1,5 @@
+import { ILinkedList } from './types';
+
 class NodeLL<T> {
     data: T;
     next: NodeLL<T> | null;
@@ -8,7 +10,7 @@ class NodeLL<T> {
     }
 }
 
-export class LinkedList<T> {
+export class LinkedList<T> implements ILinkedList<T> {
     private head: NodeLL<T> = null;
     private tail: NodeLL<T> = null;
     private _size = 0;

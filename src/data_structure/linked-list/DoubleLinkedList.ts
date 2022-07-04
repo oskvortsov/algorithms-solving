@@ -1,4 +1,5 @@
-// @ts-ignore
+import { ILinkedList } from './types';
+
 class NodeDLL<T> {
     data: T;
     next: NodeDLL<T> | null;
@@ -11,7 +12,7 @@ class NodeDLL<T> {
     }
 }
 
-export class DoubleLinkedList<T> {
+export class DoubleLinkedList<T> implements ILinkedList<T> {
     private head: NodeDLL<T> | null = null;
     private tail: NodeDLL<T> | null = null;
     private _size: number = 0;

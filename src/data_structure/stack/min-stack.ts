@@ -1,9 +1,15 @@
-class MinStack {
-    private actual = [];
-    private auxiliary = [];
+import { Stack } from './types';
 
-    private isEmpty() {
+class MinStack implements Stack<number> {
+    private actual: Array<number> = [];
+    private auxiliary: Array<number> = [];
+
+    isEmpty() {
         return this.actual.length == 0;
+    }
+
+    get size() {
+        return this.actual.length;
     }
 
     pop() {
@@ -25,7 +31,7 @@ class MinStack {
         this.actual.push(v);
     }
 
-    top() {
+    peek() {
         if (this.isEmpty()) return null;
         return this.actual[this.actual.length - 1];
     }
