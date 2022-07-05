@@ -1,6 +1,11 @@
 import { Heap } from './Heap';
 
 describe('Heap', () => {
+    const MAX_SIZE = 10000;
+    const MAX_VALUE = 999999999;
+    const MAX_SORT = (a, b) => a == b ? 0 : a > b ? -1 : 1;
+    const MAX_HEAP_COMPARE_FN = (a, b) => a > b;
+
     let heap: Heap<number> = null;
 
     beforeEach(() => {
@@ -92,4 +97,34 @@ describe('Heap', () => {
         expect(heap.size()).toBe(2);
         expect(heap.contains(2)).toBeFalsy()
     })
+
+    it('maxHeap: base case', () => {
+        const testArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const sortArr = [...testArr].sort(MAX_SORT);
+
+        const maxHeap = new Heap(10, MAX_HEAP_COMPARE_FN);
+        for (let num of testArr) maxHeap.add(num);
+        for (let num of sortArr) {
+            expect(maxHeap.poll()).toBe(num);
+        }
+    })
+
+    it('maxHeap: random big array', () => {
+        const testArr = getRandomArr(MAX_SIZE);
+        const sortArr = testArr.sort(MAX_SORT);
+
+        const heap = new Heap(MAX_SIZE, MAX_HEAP_COMPARE_FN);
+        for (let num of testArr) heap.add(num);
+        for (let num of sortArr) expect(heap.poll()).toBe(num);
+    })
+
+    function getRandomArr(size: number = 10) {
+        const arr = new Array(size);
+
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = ~~(Math.random() * MAX_VALUE);
+        }
+
+        return arr;
+    }
 })

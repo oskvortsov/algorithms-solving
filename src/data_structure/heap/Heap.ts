@@ -1,12 +1,22 @@
+
+type CompareFn = <T>(i: T, j: T) => boolean;
+
+// By default Heap is MinHeap
+const DEFAULT_COMPARE_FN: CompareFn = function<T>(a: T, b: T) {
+    return a < b;
+}
+
 export class Heap<T> {
     private data: Array<T> = null;
     private _size;
     private capacity: number;
+    private compareFn: CompareFn;
 
-    constructor(capacity = 1) {
+    constructor(capacity = 1, compareFn: CompareFn = null) {
         this.data = new Array(capacity);
         this.capacity = capacity;
         this._size = 0;
+        this.compareFn = compareFn || DEFAULT_COMPARE_FN;
     }
 
     size() {
@@ -99,20 +109,22 @@ export class Heap<T> {
             let right = 2 * k + 2;
             let smallest = left;
 
+            debugger;
             if (right < this._size && this.compare(right, left)) smallest = right;
             if (left >= this._size || this.compare(k, smallest)) break;
 
+            debugger;
             this.swap(k, smallest);
             k = smallest;
         }
     }
 
-    private swap(i, j) {
-        [this.data[i], this.data[j]] = [this.data[j], this.data[i]];
+    private compare(i: number, j: number) {
+        return this.compareFn(this.data[i], this.data[j]);
     }
 
-    private compare(i, j) {
-        return this.data[i] < this.data[j];
+    private swap(i, j) {
+        [this.data[i], this.data[j]] = [this.data[j], this.data[i]];
     }
 
 }
