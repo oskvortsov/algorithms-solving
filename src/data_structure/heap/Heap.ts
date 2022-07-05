@@ -109,11 +109,9 @@ export class Heap<T> {
             let right = 2 * k + 2;
             let smallest = left;
 
-            debugger;
             if (right < this._size && this.compare(right, left)) smallest = right;
             if (left >= this._size || this.compare(k, smallest)) break;
 
-            debugger;
             this.swap(k, smallest);
             k = smallest;
         }
