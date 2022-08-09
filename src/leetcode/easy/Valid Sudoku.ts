@@ -1,3 +1,4 @@
+// https://leetcode.com/problems/valid-sudoku/
 function isValidSudoku(board: string[][]): boolean {
   let rows = {};
   let columns = {};
@@ -6,8 +7,7 @@ function isValidSudoku(board: string[][]): boolean {
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       const char = board[i][j];
-      const number = Math.trunc(i / 3) * 3 + Math.trunc(j / 2);
-
+      const number = ~~(i / 3) * 3 + ~~(j / 3);
 
       if (!(j in rows)) rows[j] = new Set();
       if (!(i in columns)) columns[i] = new Set();
@@ -15,8 +15,12 @@ function isValidSudoku(board: string[][]): boolean {
 
       if (char == '.') continue;
 
-      if (rows[j].has(char) || columns[i].has(char) || squares[number].has(char)) {
-          return false;
+      if (
+        rows[j].has(char) ||
+        columns[i].has(char) ||
+        squares[number].has(char)
+      ) {
+        return false;
       }
 
       rows[j].add(char);
@@ -40,4 +44,17 @@ const board1 = [
   ['.', '.', '.', '.', '8', '.', '.', '7', '9'],
 ];
 
-isValidSudoku(board1);
+// isValidSudoku(board1);
+
+const board2 = [
+  ['.', '.', '5', '.', '.', '.', '.', '.', '6'],
+  ['.', '.', '.', '.', '1', '4', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '9', '2', '.', '.'],
+  ['5', '.', '.', '.', '.', '2', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '3', '.'],
+  ['.', '.', '.', '5', '4', '.', '.', '.', '.'],
+  ['3', '.', '.', '.', '.', '.', '4', '2', '.'],
+  ['.', '.', '.', '2', '7', '.', '6', '.', '.'],
+];
+console.log(isValidSudoku(board2));

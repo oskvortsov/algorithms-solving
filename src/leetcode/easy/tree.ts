@@ -2,6 +2,7 @@ class TreeNode {
   val: number;
   left: TreeNode | null;
   right: TreeNode | null;
+  next: TreeNode;
   constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
     this.val = val === undefined ? 0 : val;
     this.left = left === undefined ? null : left;
@@ -98,38 +99,62 @@ const levelsTree = new TreeNode(
 function sortedArrayToBST(nums: number[]): TreeNode | null {
   if (!nums.length) return null;
 
-  const tree = new TreeNode(Number.POSITIVE_INFINITY);
-
-  insertVal(tree, nums, 0, nums.length - 1);
-
-  return tree;
+  return insertTree(null, 0, nums.length, nums);
 }
 
-function insertVal(
-  tree: TreeNode,
-  nums: number[],
-  L: number,
-  R: number,
-  pos: string,
-) {
-  if (L == R) return;
 
-  if (R - L < 2) {
-      tree.left = new TreeNode(nums[L]);
-      tree.right = new TreeNode(nums[R]);
-      return;
+function insertTree(node: TreeNode, L: number, R: number, nums: number[]) {
+  if (L > R) return node;
+
+  let mid = L + ~~((R - L) / 2);
+
+  if (nums[mid] !== undefined) {
+    node = insertNode(node, nums[mid]);
+
+    insertTree(node, L, mid - 1, nums);
+    insertTree(node, mid + 1, R, nums);
   }
 
-  const mid = R - Math.trunc((R - L) / 2);
-  tree.val = nums[mid];
-
-  insertVal(tree, nums, L, mid - 1, 'left');
-  insertVal(tree, nums, mid + 1, R, 'right');
+  return node;
 }
 
-const sortedArray = [-10, -3, 0, 5, 9];
-console.log(sortedArrayToBST(sortedArray));
+function insertNode(node: TreeNode, elem: number) {
+  if (node == null) {
+    node = new TreeNode(elem);
+  } else {
+    if (elem < node.val) {
+      node.left = insertNode(node.left, elem);
+    } else {
+      node.right = insertNode(node.right, elem);
+    }
+  }
 
-// @ts-ignore
-const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-console.log(sortedArrayToBST(testArr));
+  return node;
+}
+
+function balanceInsert(L: number, R: number, nums: number[]) {
+  if (L <= R) {
+    let mid = L + ~~((R - L) / 2);
+    let node = new TreeNode(nums[mid]);
+
+    node.left = balanceInsert(L, mid - 1, nums);
+    node.right = balanceInsert(mid + 1, R, nums);
+
+    return node;
+  }
+
+  return null;
+}
+
+
+const testArrOrder = [0,1,2,3,4,5];
+console.log(sortedArrayToBST(testArrOrder), [3,1,5,0,2,4]);
+
+// const outLimit = [-10,-3,0,5,9];
+// console.log(sortedArrayToBST(outLimit), outLimit);
+// // @ts-ignore
+// const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+// console.log(JSON.stringify(sortedArrayToBST(testArr)));
+//
+// const testArr2 = [1, 3];
+// console.log(JSON.stringify(sortedArrayToBST(testArr2)));
