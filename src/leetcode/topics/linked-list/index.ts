@@ -39,6 +39,14 @@ export function makeCycle(head: LLNode, pos: number) {
     tail.next = node;
 }
 
+export function findKNode(head: LLNode, pos: number) {
+    let cur = head;
+
+    while (pos--) cur = cur.next;
+
+    return cur;
+}
+
 export function compareTwoList(first: LLNode, second: LLNode): boolean {
     let tmp1 = first;
     let tmp2 = second;
